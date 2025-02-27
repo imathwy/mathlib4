@@ -1,5 +1,5 @@
 /-
-Copyright (c) 2025 Paul Reichert. All rights reserved.
+Copyright (c) 2025 Zichen Wang, Chenyi Li, ZaiWen Wen. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Zichen Wang, Chenyi Li, ZaiWen Wen
 -/
@@ -105,8 +105,7 @@ def affSpanDirEquiv
   affineSpan 𝕜 s ≃ₜ (affineSpan 𝕜 s).direction:=
     ⟨affSpanEquiv 𝕜 hs, by
       simpa only [affSpanEquiv, Equiv.toFun_as_coe, Equiv.coe_fn_mk]
-      using .subtype_mk (.comp (continuous_sub_right _) continuous_subtype_val) _
-      , by
+      using .subtype_mk (.comp (continuous_sub_right _) continuous_subtype_val) _, by
       simpa only [affSpanEquiv, Equiv.toFun_as_coe, Equiv.coe_fn_mk]
       using .subtype_mk (.comp (continuous_add_right _) continuous_subtype_val) _⟩
 
@@ -132,7 +131,7 @@ lemma sub_range {s : Set V} (hs : s.Nonempty) :
   symm
   exact (eq_vadd_iff_vsub_eq x _ _).mpr rfl
 
-lemma inv_eq_self {s : Set V} (hs : s.Nonempty){x}(hx : x ∈ range (affSpanCoerce_pre' 𝕜 hs)):
+lemma inv_eq_self {s : Set V} (hs : s.Nonempty) {x} (hx : x ∈ range (affSpanCoerce_pre' 𝕜 hs)):
    (affSpanCoerce_pre' 𝕜 hs) (Function.invFun (affSpanCoerce_pre' 𝕜 hs) x) = x := by
   let g := (affSpanCoerce_pre' 𝕜 hs)
   show g (Function.invFun g x) = x
