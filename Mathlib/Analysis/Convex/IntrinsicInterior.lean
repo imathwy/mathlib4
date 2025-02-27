@@ -78,17 +78,6 @@ def affSpanEquiv {s : Set P} (hs : s.Nonempty):
     intro a _
     exact AddTorsor.vadd_vsub' _ _
 
-section
-
-theorem intrinsicInterior_sub_intrinsicClosure_intrinsicInterior [TopologicalSpace V]
-    {s : Set V}:
-    intrinsicInterior 𝕜 s ⊆ intrinsicInterior 𝕜 (intrinsicClosure 𝕜 s) := by
-  simp [intrinsicInterior]
-  rw [affineSpan_intrinsicClosure s, Function.Injective.preimage_image Subtype.val_injective]
-  apply interior_mono (preimage_mono subset_intrinsicClosure)
-
-end
-
 end
 
 noncomputable section
@@ -224,6 +213,17 @@ theorem intrinsicClosure_equiv {s : Set V} (hs : s.Nonempty):
     ((affSpanDirEquiv 𝕜 hs).symm).image_closure, ((affSpanDirEquiv 𝕜 hs).symm).image_preimage]
   rfl
 
+
+end
+
+section
+
+theorem intrinsicInterior_sub_intrinsicClosure_intrinsicInterior (𝕜) [Ring 𝕜] [AddCommGroup V]
+    [Module 𝕜 V] [TopologicalSpace V] {s : Set V}:
+    intrinsicInterior 𝕜 s ⊆ intrinsicInterior 𝕜 (intrinsicClosure 𝕜 s) := by
+  simp [intrinsicInterior]
+  rw [affineSpan_intrinsicClosure s, Function.Injective.preimage_image Subtype.val_injective]
+  apply interior_mono (preimage_mono subset_intrinsicClosure)
 
 end
 
