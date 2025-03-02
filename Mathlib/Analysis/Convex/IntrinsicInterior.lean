@@ -106,10 +106,6 @@ def AffineSubspaceHomeomorphAffineSubspace_direction
       simpa only [Equiv.toFun_as_coe, Equiv.coe_fn_mk]
       using .subtype_mk (.comp (continuous_add_right _) continuous_subtype_val) _⟩
 
-/-
-This defines an affine span equivalence between a set s in the vector space V
-and its direction.
--/
 @[simp]
 def AffineSpanHomeomorphAffineSpan_direction
     {s : Set V} (hs : s.Nonempty):
