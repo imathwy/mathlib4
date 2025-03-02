@@ -58,26 +58,33 @@ noncomputable section
 variable (𝕜) [Ring 𝕜] [AddCommGroup V] [Module 𝕜 V] [AddTorsor V P]
 
 /-
-Given a nonempty set s, it defines an isomorphism
-between the affine span and its direction
+Given a nonempty affineSubspace s, it defines an isomorphism
+between the affineSubspace and its direction
 -/
-
-@[simp]
-def AffineSpanEquivAffineSpan_direction {s : Set P} (hs : s.Nonempty):
-    affineSpan 𝕜 s ≃ (affineSpan 𝕜 s).direction where
-  toFun := fun x => ⟨x.1 -ᵥ hs.choose,
-    AffineSubspace.vsub_mem_direction (SetLike.coe_mem x) (mem_affineSpan _ hs.choose_spec)⟩
-  invFun := fun x => ⟨x +ᵥ hs.choose,
-    AffineSubspace.vadd_mem_of_mem_direction (Submodule.coe_mem x)
-    (mem_affineSpan _ hs.choose_spec)⟩
+def AffineSubspaceEquivAffineSubspace_direction {s : AffineSubspace 𝕜 P} {z} (hz : z ∈ s) :
+    s ≃ s.direction where
+  toFun := fun x => ⟨x.1 -ᵥ z,
+    AffineSubspace.vsub_mem_direction (SetLike.coe_mem x) hz⟩
+  invFun := fun x => ⟨x +ᵥ z,
+    AffineSubspace.vadd_mem_of_mem_direction (Submodule.coe_mem x) hz⟩
   left_inv := by
-    simp [Function.LeftInverse]
+    simp only [Function.LeftInverse, Subtype.forall, Subtype.mk.injEq]
     intro a _
     exact ((eq_vadd_iff_vsub_eq a _ _).mpr rfl).symm
   right_inv := by
-    simp [Function.RightInverse, Function.LeftInverse]
+    simp only [Function.RightInverse, Function.LeftInverse, Subtype.forall, Subtype.mk.injEq]
     intro a _
     exact AddTorsor.vadd_vsub' _ _
+
+/-
+Given a nonempty set s, it defines an isomorphism
+between the affine span and its direction
+-/
+@[simp]
+def AffineSpanEquivAffineSpan_direction {s : Set P} (hs : s.Nonempty):
+    affineSpan 𝕜 s ≃ (affineSpan 𝕜 s).direction := by
+  apply AffineSubspaceEquivAffineSubspace_direction 𝕜 <| mem_affineSpan 𝕜 hs.choose_spec
+
 
 end
 
@@ -87,16 +94,26 @@ variable (𝕜) [Ring 𝕜] [AddCommGroup V] [Module 𝕜 V] [TopologicalSpace V
   [ContinuousSub V] [ContinuousAdd V]
 
 /-
-This defines an affine span equivalence between a set s in the vector space V and its direction.
+there exists a homeomorphism (a continuous bijection with a continuous inverse)
+between an affine subspace  s  of a vector space  V  over a field  𝕜  and
+its direction  s.direction , given a chosen point  z ∈ s .
+-/
+def AffineSubspaceHomeomorphAffineSubspace_direction
+    {s : AffineSubspace 𝕜 V} {z} (hz : z ∈ s) : s ≃ₜ s.direction:=
+    ⟨AffineSubspaceEquivAffineSubspace_direction 𝕜 hz, by
+      simpa only [Equiv.toFun_as_coe, Equiv.coe_fn_mk]
+      using .subtype_mk (.comp (continuous_sub_right _) continuous_subtype_val) _, by
+      simpa only [Equiv.toFun_as_coe, Equiv.coe_fn_mk]
+      using .subtype_mk (.comp (continuous_add_right _) continuous_subtype_val) _⟩
+
+/-
+This defines an affine span equivalence between a set s in the vector space V
+and its direction.
 -/
 @[simp]
 def AffineSpanHomeomorphAffineSpan_direction
     {s : Set V} (hs : s.Nonempty):
   affineSpan 𝕜 s ≃ₜ (affineSpan 𝕜 s).direction:=
-    ⟨AffineSpanEquivAffineSpan_direction 𝕜 hs, by
-      simpa only [AffineSpanEquivAffineSpan_direction, Equiv.toFun_as_coe, Equiv.coe_fn_mk]
-      using .subtype_mk (.comp (continuous_sub_right _) continuous_subtype_val) _, by
-      simpa only [AffineSpanEquivAffineSpan_direction, Equiv.toFun_as_coe, Equiv.coe_fn_mk]
-      using .subtype_mk (.comp (continuous_add_right _) continuous_subtype_val) _⟩
+  AffineSubspaceHomeomorphAffineSubspace_direction 𝕜 <| mem_affineSpan 𝕜 hs.choose_spec
 
 end
