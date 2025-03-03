@@ -53,30 +53,30 @@ open scoped Pointwise
 
 variable {𝕜 V P : Type*}
 
-noncomputable section
+-- noncomputable section
 
-variable (𝕜) [Ring 𝕜] [AddCommGroup V] [Module 𝕜 V] [AddTorsor V P]
+-- variable (𝕜) [Ring 𝕜] [AddCommGroup V] [Module 𝕜 V] [AddTorsor V P]
 
-/-
-Given a nonempty affineSubspace s, it defines an isomorphism
-between the affineSubspace and its direction
--/
-def AffineSubspaceEquivAffineSubspace_direction {s : AffineSubspace 𝕜 P}
-    {z} (hz : z ∈ s) : s ≃ s.direction  :=
-  letI := nonempty_subtype.mpr ⟨z, hz⟩
-  (@Equiv.vaddConst _ _ _ (toAddTorsor s) ⟨z, hz⟩).symm
+-- /-
+-- Given a nonempty affineSubspace s, it defines an isomorphism
+-- between the affineSubspace and its direction
+-- -/
+-- def AffineSubspaceEquivAffineSubspace_direction {s : AffineSubspace 𝕜 P}
+--     {z} (hz : z ∈ s) : s ≃ s.direction  :=
+--   letI := nonempty_subtype.mpr ⟨z, hz⟩
+--   (@Equiv.vaddConst _ _ _ (toAddTorsor s) ⟨z, hz⟩).symm
 
-/-
-Given a nonempty set s, it defines an isomorphism
-between the affine span and its direction
--/
-@[simp]
-def AffineSpanEquivAffineSpan_direction {s : Set P} (hs : s.Nonempty):
-    affineSpan 𝕜 s ≃ (affineSpan 𝕜 s).direction := by
-  apply AffineSubspaceEquivAffineSubspace_direction 𝕜 <| mem_affineSpan 𝕜 hs.choose_spec
+-- /-
+-- Given a nonempty set s, it defines an isomorphism
+-- between the affine span and its direction
+-- -/
+-- @[simp]
+-- def AffineSpanEquivAffineSpan_direction {s : Set P} (hs : s.Nonempty):
+--     affineSpan 𝕜 s ≃ (affineSpan 𝕜 s).direction := by
+--   apply AffineSubspaceEquivAffineSubspace_direction 𝕜 <| mem_affineSpan 𝕜 hs.choose_spec
 
 
-end
+-- end
 
 noncomputable section
 
@@ -90,16 +90,17 @@ its direction  s.direction , given a chosen point  z ∈ s .
 -/
 def AffineSubspaceHomeomorphAffineSubspace_direction
     {s : AffineSubspace 𝕜 V} {z} (hz : z ∈ s) : s ≃ₜ s.direction :=
-    ⟨AffineSubspaceEquivAffineSubspace_direction 𝕜 hz, by
+    letI := nonempty_subtype.mpr ⟨z, hz⟩
+    ⟨(@Equiv.vaddConst _ _ _ (toAddTorsor s) ⟨z, hz⟩).symm, by
       simpa only [Equiv.toFun_as_coe, Equiv.coe_fn_mk]
       using .subtype_mk (.comp (continuous_sub_right _) continuous_subtype_val) _, by
       simpa only [Equiv.toFun_as_coe, Equiv.coe_fn_mk]
       using .subtype_mk (.comp (continuous_add_right _) continuous_subtype_val) _⟩
 
-@[simp]
-def AffineSpanHomeomorphAffineSpan_direction
-    {s : Set V} (hs : s.Nonempty):
-  affineSpan 𝕜 s ≃ₜ (affineSpan 𝕜 s).direction:=
-  AffineSubspaceHomeomorphAffineSubspace_direction 𝕜 <| mem_affineSpan 𝕜 hs.choose_spec
+-- @[simp]
+-- def AffineSpanHomeomorphAffineSpan_direction
+--     {s : Set V} (hs : s.Nonempty):
+--   affineSpan 𝕜 s ≃ₜ (affineSpan 𝕜 s).direction:=
+--   AffineSubspaceHomeomorphAffineSubspace_direction 𝕜 <| mem_affineSpan 𝕜 hs.choose_spec
 
 end
